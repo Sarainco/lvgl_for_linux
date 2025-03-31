@@ -3,8 +3,10 @@
 #
 #CC 			?= gcc
 #CXX 			?= g++
-CC 				= /opt/atk-dlrv1126-toolchain/bin/arm-linux-gnueabihf-gcc
-CXX 			= /opt/atk-dlrv1126-toolchain/bin/arm-linux-gnueabihf-g++
+TOOLCHAIN_DIR  := /opt/atk-dlrv1126-toolchain
+CC 				= $(TOOLCHAIN_DIR)/bin/arm-linux-gnueabihf-gcc
+CXX 			= $(TOOLCHAIN_DIR)/bin/arm-linux-gnueabihf-g++
+SYSROOT 		:= $(TOOLCHAIN_DIR)/arm-buildroot-linux-gnueabihf/sysroot
 LVGL_DIR_NAME 	= lvgl
 LVGL_DIR 		= .
 INCLUDE_DIR		= ./include
@@ -16,8 +18,8 @@ WARNINGS		:= -Wall -Wshadow -Wundef -Wmissing-prototypes -Wno-discarded-qualifie
 					-Wno-ignored-qualifiers -Wno-error=pedantic -Wno-sign-compare -Wno-error=missing-prototypes -Wdouble-promotion -Wclobbered -Wdeprecated -Wempty-body \
 					-Wshift-negative-value -Wstack-usage=2048 -Wno-unused-value -std=gnu99
 
-CFLAGS 			= -O3 -g0 -I$(LVGL_DIR)/ $(WARNINGS)
-LDFLAGS 		= -lm -lpthread
+CFLAGS 			= -O3 -g0 -ggdb -I$(LVGL_DIR)/ $(WARNINGS)
+LDFLAGS 		= -lm
 BIN 			= veinsight.bin
 BUILD_DIR 		= ./build
 BUILD_OBJ_DIR 	= $(BUILD_DIR)/obj
@@ -26,6 +28,18 @@ BUILD_BIN_DIR 	= $(BUILD_DIR)/bin
 prefix 			?= /usr
 bindir 			?= $(prefix)/bin
 
+# 链接选项
+LDFLAGS := --sysroot=$(SYSROOT) \
+           -L$(SYSROOT)/usr/lib \
+           -Wl,-rpath-link=$(SYSROOT)/lib:$(SYSROOT)/usr/lib \
+           -pthread -ldl
+
+# 库列表
+OPENCV_LIBS := opencv_core opencv_imgcodecs opencv_imgproc \
+               opencv_features2d opencv_flann opencv_highgui opencv_freetype
+RKMEDIA_LIBS := easymedia rga rkaiq rockx sample_common_isp
+
+
 #Collect the files to compile
 MAINSRC          = ./main.c
 
@@ -33,6 +47,16 @@ include $(LVGL_DIR)/lvgl/lvgl.mk
 include $(LVGL_DIR)/lv_100ask_lesson_demos/lv_100ask_lesson_demos.mk
 
 
+CFLAGS			+= -I$(LVGL_DIR)
+CFLAGS			+= -I$(SYSROOT)/usr/include \
+				   -I$(SYSROOT)/usr/include/rga \
+				   -I$(SYSROOT)/usr/include/easymedia \
+				   -I$(SYSROOT)/usr/include/rkaiq/uAPI \
+				   -I$(SYSROOT)/usr/include/rkaiq/xcore \
+				   -I$(SYSROOT)/usr/include/rkaiq/algos \
+				   -I$(SYSROOT)/usr/include/rkaiq/common \
+				   -I$(SYSROOT)/usr/include/rkaiq/iq_parser \
+				   -I$(SYSROOT)/usr/include/rockx
 CFLAGS			+= -I$(INCLUDE_DIR)/lv_port
 
 CSRCS 			+= $(wildcard $(SRC_DIR)/lv_port/*.c)
@@ -73,7 +97,7 @@ $(BUILD_OBJ_DIR)/%.o: %.S
 
 default: $(TARGET)
 	@mkdir -p $(dir $(BUILD_BIN_DIR)/)
-	$(CXX) -o $(BUILD_BIN_DIR)/$(BIN) $(TARGET) $(LDFLAGS)
+	$(CXX) -o $(BUILD_BIN_DIR)/$(BIN) $(TARGET) $(LDFLAGS) $(addprefix -l,$(OPENCV_LIBS)) $(addprefix -l,$(RKMEDIA_LIBS))
 
 clean: 
 	rm -rf $(BUILD_DIR)
