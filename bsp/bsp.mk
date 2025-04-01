@@ -1,0 +1,1 @@
+CSRCS += $(shell find -L $(LVGL_DIR)/bsp/bsp_i2c -name "*.c")

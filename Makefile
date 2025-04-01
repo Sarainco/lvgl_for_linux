@@ -45,6 +45,7 @@ MAINSRC          = ./main.c
 
 include $(LVGL_DIR)/lvgl/lvgl.mk
 include $(LVGL_DIR)/lv_100ask_lesson_demos/lv_100ask_lesson_demos.mk
+include $(LVGL_DIR)/log/log.mk
 
 
 CFLAGS			+= -I$(LVGL_DIR)
@@ -99,7 +100,7 @@ default: $(TARGET)
 	@mkdir -p $(dir $(BUILD_BIN_DIR)/)
 	$(CXX) -o $(BUILD_BIN_DIR)/$(BIN) $(TARGET) $(LDFLAGS) $(addprefix -l,$(OPENCV_LIBS)) $(addprefix -l,$(RKMEDIA_LIBS))
 
-clean: 
+clean:
 	rm -rf $(BUILD_DIR)
 
 install:

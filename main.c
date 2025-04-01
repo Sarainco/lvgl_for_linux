@@ -10,6 +10,7 @@
 #include "lv_100ask_lesson_demos/lv_100ask_lesson_demos.h"
 
 #include "include/lv_port/lv_port_indev.h"
+#include "log/log.h"
 
 #if LV_USE_WAYLAND
 #include "backends/interface.h"
@@ -328,13 +329,14 @@ int main(int argc, char **argv)
     //lv_port_indev_init();
 
     /*Create a Demo*/
-    //lv_demo_widgets();
+    lv_demo_widgets();
     //lv_demo_widgets_start_slideshow();
 
     //lv_demo_benchmark();
     //lv_demo_stress();
 
     LV_LOG_USER("LV_LOG Test");
+    log_debug("Debug message: %s", "This is a debug message");
     //LV_LOG("LV_LOG Test\n");
     //LV_LOG("STAGING_DIR: %s\n", getenv("STAGING_DIR"));
 
@@ -342,7 +344,7 @@ int main(int argc, char **argv)
     //part3_lesson_3_6_5();
 
 
-    lv_100ask_lesson_demos();
+    //lv_100ask_lesson_demos();
 
     lv_linux_run_loop();
 
