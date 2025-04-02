@@ -10,7 +10,7 @@
 #include "lv_100ask_lesson_demos/lv_100ask_lesson_demos.h"
 
 #include "include/lv_port/lv_port_indev.h"
-#include "log/log.h"
+#include "log/tapah_log.h"
 
 #if LV_USE_WAYLAND
 #include "backends/interface.h"
@@ -336,7 +336,7 @@ int main(int argc, char **argv)
     //lv_demo_stress();
 
     LV_LOG_USER("LV_LOG Test");
-    log_debug("Debug message: %s", "This is a debug message");
+    //log_debug("Debug message: %s", "This is a debug message");
     //LV_LOG("LV_LOG Test\n");
     //LV_LOG("STAGING_DIR: %s\n", getenv("STAGING_DIR"));
 
