@@ -143,4 +143,3 @@ sudo adduser $USER video
 newgrp video
 ./bin/lvglsim
 ```
-

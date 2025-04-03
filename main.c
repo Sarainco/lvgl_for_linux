@@ -3,7 +3,7 @@
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <stdbool.h>
 #include "lvgl/lvgl.h"
 #include "lvgl/demos/lv_demos.h"
 
@@ -11,6 +11,7 @@
 
 #include "include/lv_port/lv_port_indev.h"
 #include "log/tapah_log.h"
+#include "include/rkmedia/rkmedia.h"
 
 #if LV_USE_WAYLAND
 #include "backends/interface.h"
@@ -21,6 +22,7 @@ uint16_t window_height;
 bool fullscreen;
 bool maximize;
 
+void* key_monitor_thread(void* arg);
 static void configure_simulator(int argc, char **argv);
 
 static const char *getenv_default(const char *name, const char *dflt)
@@ -98,8 +100,9 @@ void lv_linux_run_loop(void)
     uint32_t idle_time;
 
     /*Handle LVGL tasks*/
-    while(1) {
-
+    while(1) 
+    {
+        //LV_LOG_USER("task Test");
         idle_time = lv_timer_handler(); /*Returns the time to the next timer execution*/
         usleep(idle_time * 1000);
     }
@@ -314,8 +317,26 @@ void part3_lesson_3_6_5(void)
     lv_display_add_event_cb(lv_display_get_default(), part3_lesson_3_6_5_event_handler, LV_EVENT_RESOLUTION_CHANGED, NULL);
 }
 
+
 int main(int argc, char **argv)
 {
+    uint32_t idle_time;
+    pthread_t thread_id;
+    pthread_t thread_id_rkmedia;
+    
+
+    // 创建按键监控线程
+    if (pthread_create(&thread_id, NULL, key_monitor_thread, NULL) != 0) 
+    {
+        perror("无法创建线程");
+        return -1;
+    }
+
+    if(pthread_create(&thread_id_rkmedia, NULL, rkmedia_vi_rockx_thread, NULL))
+    {
+        perror("无法创建线程");
+        return -1;
+    }
 
     configure_simulator(argc, argv);
 
@@ -325,28 +346,34 @@ int main(int argc, char **argv)
     /* Initialize the configured backend SDL2, FBDEV, libDRM or wayland */
     lv_linux_disp_init();
 
+    //lv_obj_set_style_bg_color(lv_screen_active(), lv_color_black(), 0);
+
     //todo
     //lv_port_indev_init();
 
     /*Create a Demo*/
-    lv_demo_widgets();
+    //lv_demo_widgets();
     //lv_demo_widgets_start_slideshow();
 
     //lv_demo_benchmark();
     //lv_demo_stress();
 
-    LV_LOG_USER("LV_LOG Test");
-    //log_debug("Debug message: %s", "This is a debug message");
-    //LV_LOG("LV_LOG Test\n");
+    //LV_LOG_USER("LV_LOG userTest");
     //LV_LOG("STAGING_DIR: %s\n", getenv("STAGING_DIR"));
 
     //part3_lesson_3_6_4();
     //part3_lesson_3_6_5();
 
-
     //lv_100ask_lesson_demos();
 
-    lv_linux_run_loop();
+    /*Handle LVGL tasks*/
+    while(1) 
+    {
+        //LV_LOG_USER("task Test");
+        idle_time = lv_timer_handler(); /*Returns the time to the next timer execution*/
+        usleep(idle_time * 1000);
+    }
+
 
     return 0;
 }

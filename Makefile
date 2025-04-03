@@ -37,7 +37,7 @@ LDFLAGS := --sysroot=$(SYSROOT) \
 # 库列表
 OPENCV_LIBS := opencv_core opencv_imgcodecs opencv_imgproc \
                opencv_features2d opencv_flann opencv_highgui opencv_freetype
-RKMEDIA_LIBS := easymedia rga rkaiq rockx sample_common_isp
+RKMEDIA_LIBS := easymedia rga rkaiq rockx sample_common_isp v4l2
 
 
 #Collect the files to compile
@@ -59,8 +59,13 @@ CFLAGS			+= -I$(SYSROOT)/usr/include \
 				   -I$(SYSROOT)/usr/include/rkaiq/iq_parser \
 				   -I$(SYSROOT)/usr/include/rockx
 CFLAGS			+= -I$(INCLUDE_DIR)/lv_port
+#CFLAGS			+= -I$(INCLUDE_DIR)/vi_vo
+CFLAGS			+= -I$(INCLUDE_DIR)/rkmedia
 
 CSRCS 			+= $(wildcard $(SRC_DIR)/lv_port/*.c)
+CSRCS 			+= $(wildcard $(SRC_DIR)/input_event/*.c)
+#CSRCS			+= $(wildcard $(SRC_DIR)/vi_vo/*.c)
+CSRCS 			+= $(wildcard $(SRC_DIR)/rkmedia/*.c)
 
 
 OBJEXT 			?= .o

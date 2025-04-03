@@ -36,6 +36,7 @@ extern "C" {
  **********************/
 void lv_port_indev_init(void);
 
+void show_video_layer(bool show);
 /**********************
  *      MACROS
  **********************/
