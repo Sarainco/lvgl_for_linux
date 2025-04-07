@@ -17,7 +17,6 @@
 #include "backends/interface.h"
 #endif
 
-extern unsigned char g_process_flg;
 extern void *rkmedia_vi_rockx_thread(void *args);
 
 uint16_t window_width;
