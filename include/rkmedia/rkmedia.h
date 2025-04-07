@@ -20,7 +20,6 @@
 // #include "opencv2/opencv.hpp"
 // #include "modules/carplate.h"
 
-static bool quit = false;
 
 void *rkmedia_vi_rockx_thread(void *args);
 

@@ -238,7 +238,7 @@ static void lv_100ask_lesson_demos(void)
     //lesson_10_4();           // 如何参与LVGL开发-为LVGL库做贡献
 }
 
-
+#if 0
 static void part3_lesson_3_6_3_event_handler(lv_event_t * e)
 {
     lv_event_code_t code = lv_event_get_code(e);
@@ -316,7 +316,7 @@ void part3_lesson_3_6_5(void)
 {
     lv_display_add_event_cb(lv_display_get_default(), part3_lesson_3_6_5_event_handler, LV_EVENT_RESOLUTION_CHANGED, NULL);
 }
-
+#endif
 
 int main(int argc, char **argv)
 {
@@ -341,10 +341,10 @@ int main(int argc, char **argv)
     configure_simulator(argc, argv);
 
     /* Initialize LVGL. */
-    lv_init();
+    //lv_init();
 
     /* Initialize the configured backend SDL2, FBDEV, libDRM or wayland */
-    lv_linux_disp_init();
+    //lv_linux_disp_init();
 
     //lv_obj_set_style_bg_color(lv_screen_active(), lv_color_black(), 0);
 
@@ -370,8 +370,9 @@ int main(int argc, char **argv)
     while(1) 
     {
         //LV_LOG_USER("task Test");
-        idle_time = lv_timer_handler(); /*Returns the time to the next timer execution*/
-        usleep(idle_time * 1000);
+         //idle_time = lv_timer_handler(); /*Returns the time to the next timer execution*/
+         //usleep(idle_time * 1000);
+        sleep(1);
     }
 
 

@@ -37,16 +37,17 @@ LDFLAGS := --sysroot=$(SYSROOT) \
 # 库列表
 OPENCV_LIBS := opencv_core opencv_imgcodecs opencv_imgproc \
                opencv_features2d opencv_flann opencv_highgui opencv_freetype
-RKMEDIA_LIBS := easymedia rga rkaiq rockx sample_common_isp v4l2
+RKMEDIA_LIBS := easymedia rga rkaiq rockx sample_common_isp
 
 
 #Collect the files to compile
 MAINSRC          = ./main.c
 
 include $(LVGL_DIR)/lvgl/lvgl.mk
-include $(LVGL_DIR)/lv_100ask_lesson_demos/lv_100ask_lesson_demos.mk
+#include $(LVGL_DIR)/lv_100ask_lesson_demos/lv_100ask_lesson_demos.mk
 include $(LVGL_DIR)/log/tapah_log.mk
 
+CFLAGS 			+= -DRKAIQ
 
 CFLAGS			+= -I$(LVGL_DIR)
 CFLAGS			+= -I$(SYSROOT)/usr/include \

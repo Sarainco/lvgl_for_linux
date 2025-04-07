@@ -132,7 +132,7 @@ void *rkmedia_vi_rockx_thread(void *args)
 
   // pthread_create(&rkmedia_vi_rockx_tidp, NULL, rkmedia_vi_rockx_thread, NULL);
   // printf("%s initial finish\n", __func__);
-  while (!quit) 
+  while (1) 
   {
     MEDIA_BUFFER src_mb = NULL;
     src_mb = RK_MPI_SYS_GetMediaBuffer(RK_ID_RGA, 1, -1);
@@ -142,12 +142,15 @@ void *rkmedia_vi_rockx_thread(void *args)
       break;
     }
 
+    //todo process
+
     RK_MPI_SYS_SendMediaBuffer(RK_ID_VO, 0, src_mb);
     
     RK_MPI_MB_ReleaseBuffer(src_mb);
     src_mb = NULL;
     //usleep(500000);
   }
+
   printf("%s exit!\n", __func__);
   printf("Unbind VI[0:1] to RGA[0:1]....\n");
   stSrcChn.enModId = RK_ID_VI;
@@ -190,7 +193,7 @@ void *rkmedia_vi_rockx_thread(void *args)
 
 
 #if 0
-void *rkmedia_vi_rockx_thread(void *args) 
+void *rkmedia_vi_rockx_thread111(void *args) 
 {
   // pthread_detach(pthread_self());//将线程状态改为unjoinable状态，确保资源的释放
 
