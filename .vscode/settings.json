@@ -3,6 +3,7 @@
         "pthread.h": "c",
         "vi_vo_thread.h": "c",
         "rkmedia.h": "c",
-        "lv_port_indev.h": "c"
+        "lv_port_indev.h": "c",
+        "stdio.h": "c"
     }
 }

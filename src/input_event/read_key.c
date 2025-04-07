@@ -16,6 +16,7 @@
 
 // 共享变量
 volatile unsigned char key_pressed = 0;
+unsigned char g_process_flg = 0;
 pthread_mutex_t screen_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 void* key_monitor_thread(void* arg)
@@ -54,15 +55,18 @@ void* key_monitor_thread(void* arg)
                     if(press_duration < 2)
                     {
                         //system("echo 0 > /sys/class/graphics/fb0/blank");
+                        g_process_flg = 1;
                     }
                     else if(press_duration < 5)
                     {
                         //system("echo 1 > /sys/class/graphics/fb0/blank");
+                        g_process_flg = 0;
                     }
                     else
                     {
                         // 可以在这里添加长按反馈，比如闪烁LED或发出提示音
                         printf("长按中(已持续%.1f秒)...\n", press_duration);
+                        g_process_flg = 0;
                     }
                     key_pressed = 0;
                 }

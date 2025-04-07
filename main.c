@@ -11,11 +11,14 @@
 
 #include "include/lv_port/lv_port_indev.h"
 #include "log/tapah_log.h"
-#include "include/rkmedia/rkmedia.h"
+//#include "include/rkmedia/rkmedia.h"
 
 #if LV_USE_WAYLAND
 #include "backends/interface.h"
 #endif
+
+extern unsigned char g_process_flg;
+extern void *rkmedia_vi_rockx_thread(void *args);
 
 uint16_t window_width;
 uint16_t window_height;
