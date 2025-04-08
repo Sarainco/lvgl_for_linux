@@ -20,7 +20,7 @@ WARNINGS		:= -Wall -Wshadow -Wundef -Wmissing-prototypes -Wno-discarded-qualifie
 
 CFLAGS 			= -O3 -g0 -ggdb -I$(LVGL_DIR)/ $(WARNINGS)
 LDFLAGS 		= -lm
-BIN 			= veinsight.bin
+BIN 			= vs800.bin
 BUILD_DIR 		= ./build
 BUILD_OBJ_DIR 	= $(BUILD_DIR)/obj
 BUILD_BIN_DIR 	= $(BUILD_DIR)/bin
@@ -44,7 +44,7 @@ RKMEDIA_LIBS := easymedia rga rkaiq rockx sample_common_isp
 MAINSRC          = ./main.c
 
 include $(LVGL_DIR)/lvgl/lvgl.mk
-#include $(LVGL_DIR)/lv_100ask_lesson_demos/lv_100ask_lesson_demos.mk
+include $(LVGL_DIR)/lv_100ask_lesson_demos/lv_100ask_lesson_demos.mk
 include $(LVGL_DIR)/log/tapah_log.mk
 
 CFLAGS 			+= -DRKAIQ

@@ -8,6 +8,7 @@
 #include "lvgl/demos/lv_demos.h"
 
 #include "lv_100ask_lesson_demos/lv_100ask_lesson_demos.h"
+#include "include/lv_port/lv_blz.h"
 
 #include "include/lv_port/lv_port_indev.h"
 #include "log/tapah_log.h"
@@ -171,8 +172,8 @@ static void lv_100ask_lesson_demos(void)
     //lesson_2_8_1();         // 基础对象的事件(events)、事件冒泡
     //lesson_2_9_1();         // LVGL的定时器(lv_timer)-入门
 
-    //lesson_3_1_1();         // 标签控件(lv_label)的用法
-    lesson_3_2_1();         // 按钮控件(lv_button)的用法
+    lesson_3_1_1();         // 标签控件(lv_label)的用法
+    //lesson_3_2_1();         // 按钮控件(lv_button)的用法
     //lesson_3_3_1();         // 进度条控件(lv_bar)的用法
     //lesson_3_4_1();         // 滑动条控件(lv_slider)的用法
     //lesson_3_5_1();         // 圆弧控件(lv_arc)的用法
@@ -334,19 +335,19 @@ int main(int argc, char **argv)
         return -1;
     }
 
-    if(pthread_create(&thread_id_rkmedia, NULL, rkmedia_vi_rockx_thread, NULL))
-    {
-        perror("无法创建线程");
-        return -1;
-    }
+    // if(pthread_create(&thread_id_rkmedia, NULL, rkmedia_vi_rockx_thread, NULL))
+    // {
+    //     perror("无法创建线程");
+    //     return -1;
+    // }
 
     configure_simulator(argc, argv);
 
     /* Initialize LVGL. */
-    //lv_init();
+    lv_init();
 
     /* Initialize the configured backend SDL2, FBDEV, libDRM or wayland */
-    //lv_linux_disp_init();
+    lv_linux_disp_init();
 
     //lv_obj_set_style_bg_color(lv_screen_active(), lv_color_black(), 0);
 
@@ -367,14 +368,18 @@ int main(int argc, char **argv)
     //part3_lesson_3_6_5();
 
     //lv_100ask_lesson_demos();
+    //create_ui();
+    //lv_example_datetime();
+    // create_main_ui();
+    create_status_ui();
 
     /*Handle LVGL tasks*/
     while(1) 
     {
         //LV_LOG_USER("task Test");
-         //idle_time = lv_timer_handler(); /*Returns the time to the next timer execution*/
-         //usleep(idle_time * 1000);
-        sleep(1);
+         idle_time = lv_timer_handler(); /*Returns the time to the next timer execution*/
+         usleep(idle_time * 1000);
+        //sleep(1);
     }
 
 

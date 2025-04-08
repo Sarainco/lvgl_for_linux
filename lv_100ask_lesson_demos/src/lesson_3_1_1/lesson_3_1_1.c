@@ -77,40 +77,40 @@ static void my_timer1(lv_timer_t * timer);
 /* 注意：如果你的环境或者硬件无法显示中文，请阅读课件 《3-1-1_标签控件(lv_label)的用法.pdf》 『无法显示中文？』 小节 */
 void lesson_3_1_1(void)
 {
-    //char * label_str = "100askkkkkk""11111111""222222222";
+    char * label_str = "100askkkkkk""11111111""222222222";
     //static char label_str[] = "www.100ask.net\n100ask\n100ask\n100ask";
     lv_obj_t * label = lv_label_create(lv_screen_active());
-    //lv_obj_set_size(label, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
-    //lv_obj_set_size(label, 20, LV_SIZE_CONTENT);
-    //lv_obj_set_style_bg_opa(label,  LV_OPA_COVER, 0); 
-    //lv_obj_set_style_bg_color(label,  lv_color_hex(0x9fce43), 0); 
-    //lv_label_set_long_mode(label, LV_LABEL_LONG_DOT);
+    lv_obj_set_size(label, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+    lv_obj_set_size(label, 20, LV_SIZE_CONTENT);
+    lv_obj_set_style_bg_opa(label,  LV_OPA_COVER, 0); 
+    lv_obj_set_style_bg_color(label,  lv_color_hex(0x9fce43), 0); 
+    lv_label_set_long_mode(label, LV_LABEL_LONG_DOT);
 
-    //lv_obj_add_flag(label, LV_OBJ_FLAG_CLICKABLE); 
-    //lv_obj_add_event_cb(label, my_event_cb, LV_EVENT_CLICKED, label);
+    lv_obj_add_flag(label, LV_OBJ_FLAG_CLICKABLE); 
+    lv_obj_add_event_cb(label, my_event_cb, LV_EVENT_CLICKED, label);
 
-    //lv_label_set_text(label, label_str);
-    //lv_label_set_text(label, "100askkkkkk""11111111""222222222");
-    // lv_label_set_text(label, "100askkkkkk"LV_SYMBOL_WIFI LV_SYMBOL_BACKSPACE LV_SYMBOL_BATTERY_FULL);
-    //lv_obj_set_style_text_font(label,  &lv_font_montserrat_40, 0); 
-    //lv_obj_set_style_text_font(label,  &lv_font_simsun_16_cjk, 0); 
-    //lv_obj_set_style_text_font(label,  &lv_font_source_han_sans_bold_28, 0); 
+    lv_label_set_text(label, label_str);
+    // //lv_label_set_text(label, "100askkkkkk""11111111""222222222");
+    // // lv_label_set_text(label, "100askkkkkk"LV_SYMBOL_WIFI LV_SYMBOL_BACKSPACE LV_SYMBOL_BATTERY_FULL);
+    // // lv_obj_set_style_text_font(label,  &lv_font_montserrat_40, 0); 
+    // // lv_obj_set_style_text_font(label,  &lv_font_simsun_16_cjk, 0); 
+    // lv_obj_set_style_text_font(label,  &lv_font_source_han_sans_bold_28, 0); 
     
-    //lv_obj_set_style_text_color(label, lv_color_hex(0xf1645a), 0);
-    //lv_label_set_text_fmt(label, "%s%d%s%s", "www.", 100, "ask", ".net");
-    //lv_label_set_text_static(label, label_str);
+    // lv_obj_set_style_text_color(label, lv_color_hex(0xf1645a), 0);
+    // lv_label_set_text_fmt(label, "%s%d%s%s", "www.", 100, "ask", ".net");
+    // lv_label_set_text_static(label, label_str);
 
-    //lv_label_set_text_selection_start(label, 4);
-    //lv_label_set_text_selection_end(label, 10);
-    //lv_obj_set_style_text_color(label, lv_color_hex(0xe84134), LV_PART_SELECTED);
-    //lv_obj_set_style_bg_color(label, lv_color_hex(0xf5f5f5), LV_PART_SELECTED);
+    // lv_label_set_text_selection_start(label, 4);
+    // lv_label_set_text_selection_end(label, 10);
+    // lv_obj_set_style_text_color(label, lv_color_hex(0xe84134), LV_PART_SELECTED);
+    // lv_obj_set_style_bg_color(label, lv_color_hex(0xf5f5f5), LV_PART_SELECTED);
 
-    //lv_obj_set_style_text_align(label, LV_TEXT_ALIGN_LEFT, 0);
+    // lv_obj_set_style_text_align(label, LV_TEXT_ALIGN_LEFT, 0);
 
-    //lv_timer_t * timer1;
+//     lv_timer_t * timer1;
 
-    /* 创建第一个timer */
-    //timer1 = lv_timer_create(my_timer1, 100, label);
+//     /* 创建第一个timer */
+//     timer1 = lv_timer_create(my_timer1, 100, label);
 }
 
 /**********************
@@ -129,7 +129,7 @@ static void my_timer1(lv_timer_t * timer)
     //lv_label_set_text(label, "80, 90%");
 
     /* 注意：如果你的环境或者硬件无法显示中文，请阅读课件 《3-1-1_标签控件(lv_label)的用法.pdf》 『无法显示中文？』 小节 */
-    //lv_label_set_text_fmt(label, "%d湿度:%d℃, 温度：%d%%", lv_rand(0, 9), lv_rand(20, 30), lv_rand(70, 80));
+    lv_label_set_text_fmt(label, "%d湿度:%d℃, 温度：%d%%", lv_rand(0, 9), lv_rand(20, 30), lv_rand(70, 80));
     //LV_LOG_USER("my_timer1 user_data: %d, idle: %d", *user_data, idle);
 }
 

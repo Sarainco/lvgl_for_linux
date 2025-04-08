@@ -312,6 +312,7 @@ void *rkmedia_vi_rockx_thread(void *args)
     }
   }
 
+  //todo
     RK_MPI_SYS_SendMediaBuffer(RK_ID_VO, 0, src_mb);
     
     RK_MPI_MB_ReleaseBuffer(src_mb);
@@ -364,6 +365,9 @@ void *rkmedia_vi_rockx_thread(void *args)
 
   return;
 }
+
+
+
 
 
 #if 0
