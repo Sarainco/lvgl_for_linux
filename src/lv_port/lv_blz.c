@@ -360,7 +360,7 @@ static void update_ui(lv_timer_t *timer)
     lv_label_set_text(system_time_label, sys_time_str);
     
     // 2. 更新电池状态(模拟电量变化)
-    battery_level = (battery_level + 1) % 100;
+    //battery_level = (battery_level + 1) % 100;
     lv_label_set_text_fmt(battery_label, "%d%%", battery_level);
     
     // 根据电量改变图标颜色
@@ -368,6 +368,17 @@ static void update_ui(lv_timer_t *timer)
         lv_obj_set_style_text_color(battery_icon, lv_color_hex(0xFF0000), 0);
     } else {
         lv_obj_set_style_text_color(battery_icon, lv_color_hex(0x00FF00), 0);
+    }
+}
+
+static void event_handler(lv_event_t * e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    lv_obj_t * obj = lv_event_get_target(e);
+    if(code == LV_EVENT_VALUE_CHANGED) {
+        char buf[32];
+        lv_dropdown_get_selected_str(obj, buf, sizeof(buf));
+        LV_LOG_USER("Option: %s", buf);
     }
 }
 
@@ -412,7 +423,8 @@ void create_status_ui()
     lv_obj_set_style_text_color(battery_label, lv_color_hex(0xFFFFFF), 0);
     lv_obj_set_style_text_font(battery_label, &lv_font_montserrat_20, 0);
     lv_label_set_text_fmt(battery_label, "%d%%", battery_level);
-    
+
+#if 0
     /* 2. 中部区域 - 工作模式 */
     lv_obj_t *mid_panel = lv_obj_create(lv_scr_act());
     lv_obj_set_size(mid_panel, LV_PCT(80), 100);
@@ -433,7 +445,43 @@ void create_status_ui()
     lv_obj_set_style_text_color(mode_label, lv_color_hex(0xFFFFFF), 0);
     lv_obj_set_style_text_font(mode_label, &lv_font_montserrat_24, 0);
     lv_label_set_text(mode_label, mode_names[current_mode]);
-    
+#endif
+    lv_obj_t * dd = lv_dropdown_create(lv_screen_active());
+    lv_obj_set_width(dd, lv_pct(50));  // 百分比宽度
+    lv_obj_set_height(dd, 60);         // 固定高度
+    lv_dropdown_set_options(dd, "Apple\n"
+                                "Banana\n"
+                                "Orange\n"
+                                "Cherry\n"
+                                "Grape\n"
+                                "Raspberry\n"
+                                "Melon\n"
+                                "Orange\n"
+                                "Lemon\n"
+                                "Nuts");
+
+    //lv_dropdown_add_option(dd, "New option", 0);
+    //lv_dropdown_add_option(dd, "New option", LV_DROPDOWN_POS_LAST);
+    //lv_dropdown_set_selected(dd, 2);
+    //lv_dropdown_set_selected(dd, -1);
+
+    lv_obj_align(dd, LV_ALIGN_CENTER, 0, 0);
+
+    lv_obj_set_style_bg_color(dd, lv_color_hex(0xff3c3b), LV_PART_MAIN | LV_STATE_DEFAULT);
+    //lv_obj_set_style_bg_color(dd, lv_color_hex(0x222222), 0);
+
+    lv_obj_t * dd_list = lv_dropdown_get_list(dd);
+    lv_obj_set_style_bg_color(dd_list, lv_color_hex(0xff3c3b), LV_PART_MAIN | LV_STATE_DEFAULT);
+    //lv_obj_set_style_bg_color(dd_list, lv_color_hex(0x222222), 0);
+
+    //lv_dropdown_set_dir(dd, LV_DIR_LEFT);
+    lv_dropdown_set_symbol(dd, LV_SYMBOL_UPLOAD);
+
+    //lv_dropdown_set_text(dd, "www.100ask.net");
+    //lv_dropdown_open(dd);
+
+    lv_obj_add_event_cb(dd, event_handler, LV_EVENT_ALL, NULL);
+
     /* 3. 底部区域 - 系统时间 */
     system_time_label = lv_label_create(lv_scr_act());
     lv_obj_set_style_text_color(system_time_label, lv_color_hex(0xAAAAAA), 0);

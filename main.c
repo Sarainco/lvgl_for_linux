@@ -172,7 +172,7 @@ static void lv_100ask_lesson_demos(void)
     //lesson_2_8_1();         // 基础对象的事件(events)、事件冒泡
     //lesson_2_9_1();         // LVGL的定时器(lv_timer)-入门
 
-    lesson_3_1_1();         // 标签控件(lv_label)的用法
+    //lesson_3_1_1();         // 标签控件(lv_label)的用法
     //lesson_3_2_1();         // 按钮控件(lv_button)的用法
     //lesson_3_3_1();         // 进度条控件(lv_bar)的用法
     //lesson_3_4_1();         // 滑动条控件(lv_slider)的用法
@@ -184,7 +184,7 @@ static void lv_100ask_lesson_demos(void)
     //lesson_3_10_1();        // 复选框控件(lv_checkbox)的用法
     //lesson_3_11_1();        // 线条控件(lv_line)的用法
     //lesson_3_12_1();        // LED控件(lv_led)的用法
-    //lesson_3_13_1();        // 下拉列表控件(lv_dropdown)的用法
+    lesson_3_13_1();        // 下拉列表控件(lv_dropdown)的用法
     //lesson_3_14_1();        // 滚轮控件(lv_roller)的用法
     //lesson_3_15_1();        // 消息框控件lv_msgbox的用法
     //lesson_3_16_1();        // 富文本控件(lv_span)的用法
