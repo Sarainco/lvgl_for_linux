@@ -1,6 +1,9 @@
 #include "../../include/lv_port/lv_blz.h"
 #include <time.h>
 
+
+
+#if 0
 // 屏幕尺寸定义
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
@@ -316,13 +319,12 @@ void create_main_ui(void)
 #endif
 
 
-// 全局UI对象
-static lv_obj_t *time_label;          // 时间显示
-static lv_obj_t *battery_icon;       // 电池图标
-static lv_obj_t *battery_label;      // 电量百分比
-static lv_obj_t *mode_icon;          // 模式图标
-static lv_obj_t *mode_label;         // 模式文字
-static lv_obj_t *system_time_label;  // 系统时间
+static lv_obj_t *screen1, *screen2;  // 两个屏幕
+static lv_obj_t *time_label, *battery_label, *battery_icon, *system_time_label;
+static lv_obj_t *screen2_label;      // 第二个屏幕的标签
+static int battery_level = 80;       // 电池电量
+static lv_indev_t *indev;            // 输入设备
+static lv_group_t *group;            // 对象组
 
 // 电池状态
 static int battery_level = 78;       // 当前电量(78%)
@@ -494,24 +496,201 @@ void create_status_ui()
     update_ui(NULL); // 立即更新一次
 }
 
-// 模式切换函数(外部调用)
-void switch_work_mode(WorkMode new_mode) 
+
+#endif
+
+
+// 全局变量定义
+static lv_obj_t *screen1, *screen2;
+static lv_obj_t *time_label, *battery_label, *battery_icon, *system_time_label;
+static lv_obj_t *screen2_label;
+static int battery_level = 80;
+static lv_timer_t *update_timer;
+
+// 更新界面数据
+static void update_ui(lv_timer_t *timer) 
 {
-    if(new_mode >= MODE_COUNT) return;
+    // 更新时间
+    time_t now;
+    struct tm *timeinfo;
+    char time_str[16];
+    char sys_time_str[32];
     
-    current_mode = new_mode;
-    lv_label_set_text(mode_label, mode_names[current_mode]);
+    time(&now);
+    timeinfo = localtime(&now);
     
-    // 根据模式更换图标
-    switch(current_mode) {
-        case MODE_STANDARD:
-            lv_label_set_text(mode_icon, LV_SYMBOL_SETTINGS);
-            break;
-        // case MODE_VESSEL_ENHANCE:
-        //     lv_label_set_text(mode_icon, LV_SYMBOL_HEART);
-        //     break;
-        case MODE_3D_VIEW:
-            lv_label_set_text(mode_icon, LV_SYMBOL_VIDEO);
-            break;
+    // 上部时间显示(时分)
+    strftime(time_str, sizeof(time_str), "%H:%M", timeinfo);
+    lv_label_set_text(time_label, time_str);
+    
+    // 底部系统时间(完整格式)
+    strftime(sys_time_str, sizeof(sys_time_str), "%Y-%m-%d %H:%M:%S", timeinfo);
+    lv_label_set_text(system_time_label, sys_time_str);
+    
+    // 更新电池状态(模拟电量变化)
+    //battery_level = (battery_level > 0) ? (battery_level - 1) % 100 : 100;
+    lv_label_set_text_fmt(battery_label, "%d%%", battery_level);
+    
+    // 根据电量改变图标颜色
+    if(battery_level < 20) {
+        lv_obj_set_style_text_color(battery_icon, lv_color_hex(0xFF0000), 0);
+    } else {
+        lv_obj_set_style_text_color(battery_icon, lv_color_hex(0x00FF00), 0);
     }
+}
+
+// 事件处理回调
+static void event_handler(lv_event_t * e) 
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    lv_obj_t * obj = lv_event_get_target(e);
+    
+    if(code == LV_EVENT_VALUE_CHANGED) {
+        char buf[32];
+        lv_dropdown_get_selected_str(obj, buf, sizeof(buf));
+        LV_LOG_USER("Option: %s", buf);
+    }
+}
+
+// 手势事件处理
+static void gesture_event_handler(lv_event_t * e) 
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    
+    if(code == LV_EVENT_GESTURE) {
+        lv_indev_t * indev = lv_indev_get_act();
+        if(indev == NULL) return;
+        
+        lv_dir_t dir = lv_indev_get_gesture_dir(indev);
+        
+        if(dir == LV_DIR_LEFT) {
+            // 向左滑动切换到第二个界面
+            lv_scr_load_anim(screen2, LV_SCR_LOAD_ANIM_MOVE_LEFT, 300, 0, false);
+        }
+        else if(dir == LV_DIR_RIGHT) {
+            // 向右滑动返回第一个界面
+            lv_scr_load_anim(screen1, LV_SCR_LOAD_ANIM_MOVE_RIGHT, 300, 0, false);
+        }
+    }
+}
+
+// 按钮事件处理
+static void btn_event_handler(lv_event_t * e) 
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    
+    if(code == LV_EVENT_CLICKED) {
+        lv_scr_load_anim(screen1, LV_SCR_LOAD_ANIM_MOVE_RIGHT, 300, 0, false);
+    }
+}
+
+// 创建主界面
+static void create_main_ui(lv_obj_t *parent) 
+{
+    // 设置黑色背景
+    lv_obj_set_style_bg_color(parent, lv_color_hex(0x000000), LV_PART_MAIN);
+    
+    /* 1. 上部区域 - 时间+电量 */
+    lv_obj_t *top_panel = lv_obj_create(parent);
+    lv_obj_set_size(top_panel, LV_PCT(100), LV_SIZE_CONTENT);
+    lv_obj_set_flex_flow(top_panel, LV_FLEX_FLOW_ROW);
+    lv_obj_set_flex_align(top_panel, LV_FLEX_ALIGN_SPACE_BETWEEN, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+    lv_obj_set_style_pad_all(top_panel, 10, 0);
+    lv_obj_set_style_bg_opa(top_panel, LV_OPA_TRANSP, 0);
+    lv_obj_set_style_border_opa(top_panel, LV_OPA_TRANSP, 0);
+    lv_obj_align(top_panel, LV_ALIGN_TOP_MID, 0, 10);
+    
+    // 时间显示
+    time_label = lv_label_create(top_panel);
+    lv_obj_set_style_text_color(time_label, lv_color_hex(0xFFFFFF), 0);
+    lv_obj_set_style_text_font(time_label, &lv_font_montserrat_28, 0);
+    lv_label_set_text(time_label, "00:00");
+    
+    // 电池组
+    lv_obj_t *battery_group = lv_obj_create(top_panel);
+    lv_obj_set_size(battery_group, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+    lv_obj_set_flex_flow(battery_group, LV_FLEX_FLOW_ROW);
+    lv_obj_set_flex_align(battery_group, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+    lv_obj_set_style_bg_opa(battery_group, LV_OPA_TRANSP, 0);
+    lv_obj_set_style_border_opa(battery_group, LV_OPA_TRANSP, 0);
+    
+    // 电池图标
+    battery_icon = lv_label_create(battery_group);
+    lv_obj_set_style_text_color(battery_icon, lv_color_hex(0x00FF00), 0);
+    lv_obj_set_style_text_font(battery_icon, &lv_font_montserrat_24, 0);
+    lv_label_set_text(battery_icon, LV_SYMBOL_BATTERY_FULL);
+    
+    // 电量百分比
+    battery_label = lv_label_create(battery_group);
+    lv_obj_set_style_text_color(battery_label, lv_color_hex(0xFFFFFF), 0);
+    lv_obj_set_style_text_font(battery_label, &lv_font_montserrat_20, 0);
+    lv_label_set_text_fmt(battery_label, "%d%%", battery_level);
+
+    /* 2. 下拉菜单 */
+    lv_obj_t * dd = lv_dropdown_create(parent);
+    lv_obj_set_width(dd, lv_pct(50));
+    lv_obj_set_height(dd, 60);
+    lv_dropdown_set_options(dd, "Standard display\nVessel highlighting\n3D stereoscopic display");
+    lv_obj_align(dd, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_set_style_bg_color(dd, lv_color_hex(0xff3c3b), LV_PART_MAIN | LV_STATE_DEFAULT);
+    
+    lv_obj_t * dd_list = lv_dropdown_get_list(dd);
+    lv_obj_set_style_bg_color(dd_list, lv_color_hex(0xff3c3b), LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    lv_obj_add_event_cb(dd, event_handler, LV_EVENT_ALL, NULL);
+
+    /* 3. 底部区域 - 系统时间 */
+    system_time_label = lv_label_create(parent);
+    lv_obj_set_style_text_color(system_time_label, lv_color_hex(0xAAAAAA), 0);
+    lv_obj_set_style_text_font(system_time_label, &lv_font_montserrat_18, 0);
+    lv_obj_align(system_time_label, LV_ALIGN_BOTTOM_MID, 0, -10);
+    lv_label_set_text(system_time_label, "2023-01-01 00:00:00");
+}
+
+// 创建第二个界面
+static void create_second_ui(lv_obj_t *parent) 
+{
+    // 设置蓝色背景以示区别
+    lv_obj_set_style_bg_color(parent, lv_color_hex(0x000033), LV_PART_MAIN);
+    
+    // 添加一个大标签
+    screen2_label = lv_label_create(parent);
+    lv_obj_set_style_text_color(screen2_label, lv_color_hex(0xFFFFFF), 0);
+    lv_obj_set_style_text_font(screen2_label, &lv_font_montserrat_36, 0);
+    lv_label_set_text(screen2_label, "lalalalala\n");
+    lv_obj_center(screen2_label);
+    
+    // 添加返回按钮
+    lv_obj_t * btn = lv_btn_create(parent);
+    lv_obj_set_size(btn, 120, 50);
+    lv_obj_align(btn, LV_ALIGN_BOTTOM_MID, 0, -20);
+    
+    lv_obj_t * btn_label = lv_label_create(btn);
+    lv_label_set_text(btn_label, "return");
+    lv_obj_center(btn_label);
+    
+    lv_obj_add_event_cb(btn, btn_event_handler, LV_EVENT_CLICKED, NULL);
+}
+
+// 创建界面
+void create_status_ui(void) 
+{
+    // 创建两个屏幕
+    screen1 = lv_obj_create(NULL);
+    screen2 = lv_obj_create(NULL);
+    
+    // 创建两个界面的UI
+    create_main_ui(screen1);
+    create_second_ui(screen2);
+    
+    // 添加手势检测
+    lv_obj_add_event_cb(screen1, gesture_event_handler, LV_EVENT_ALL, NULL);
+    lv_obj_add_event_cb(screen2, gesture_event_handler, LV_EVENT_ALL, NULL);
+    
+    // 加载第一个屏幕
+    lv_scr_load(screen1);
+    
+    // 创建定时器(每秒更新一次)
+    update_timer = lv_timer_create(update_ui, 1000, NULL);
+    update_ui(NULL); // 立即更新一次
 }

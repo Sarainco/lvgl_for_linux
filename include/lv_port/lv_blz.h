@@ -25,9 +25,10 @@ extern "C" {
  **********************/
 void create_ui(void);
 //void lv_example_datetime(void);
-void create_main_ui(void);
+// void create_main_ui(void);
 
-void create_status_ui();
+//void create_status_ui();
+void create_status_ui(void);
 
 // void switch_work_mode(WorkMode new_mode);
 /**********************
