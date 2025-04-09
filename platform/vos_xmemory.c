@@ -91,7 +91,7 @@ void *vos_xmalloc(const char *pcFile, u_int32 ulLine,
         vos_xzerror("alloc", ulModuleId, sizeof(ST_MEM_INFO));
         return NULL;
     }
-    memset(pstInfo,0,sizeof(uiLen));
+    memset(pstInfo, 0, uiLen);
 
     pMemory = pstInfo + 1;
     pstInfo->ulModuleId = ulModuleId;
