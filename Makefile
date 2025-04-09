@@ -44,7 +44,7 @@ RKMEDIA_LIBS := easymedia rga rkaiq rockx sample_common_isp
 MAINSRC          = ./main.c
 
 include $(LVGL_DIR)/lvgl/lvgl.mk
-include $(LVGL_DIR)/lv_100ask_lesson_demos/lv_100ask_lesson_demos.mk
+#include $(LVGL_DIR)/lv_100ask_lesson_demos/lv_100ask_lesson_demos.mk
 include $(LVGL_DIR)/log/tapah_log.mk
 
 CFLAGS 			+= -DRKAIQ

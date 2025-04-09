@@ -584,6 +584,24 @@ static void btn_event_handler(lv_event_t * e)
     }
 }
 
+// 按钮事件处理
+bool g_bProcessFlag = false;
+static void btn_event_handler2(lv_event_t * e) 
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    
+    if(code == LV_EVENT_CLICKED) 
+    {
+        g_bProcessFlag = !g_bProcessFlag;
+    }
+    if (!g_bProcessFlag)
+    {
+        // 停止视频后调用
+        lv_obj_invalidate(lv_scr_act());  // 标记整个屏幕为需要重绘
+        lv_refr_now(NULL);                // 立即执行刷新
+    }
+}
+
 // 创建主界面
 static void create_main_ui(lv_obj_t *parent) 
 {
@@ -645,6 +663,34 @@ static void create_main_ui(lv_obj_t *parent)
     lv_obj_set_style_text_font(system_time_label, &lv_font_montserrat_18, 0);
     lv_obj_align(system_time_label, LV_ALIGN_BOTTOM_MID, 0, -10);
     lv_label_set_text(system_time_label, "2023-01-01 00:00:00");
+
+    // 添加返回按钮
+    lv_obj_t * btn = lv_btn_create(parent);
+    lv_obj_set_size(btn, 120, 50);
+    lv_obj_align(btn, LV_ALIGN_BOTTOM_MID, 0, -40);
+    
+    lv_obj_t * btn_label = lv_label_create(btn);
+    lv_label_set_text(btn_label, "process");
+    lv_obj_center(btn_label);
+    
+    lv_obj_add_event_cb(btn, btn_event_handler2, LV_EVENT_CLICKED, NULL);
+}
+
+/**********************
+ *   STATIC FUNCTIONS
+ **********************/
+
+static void btn_event_handler1(lv_event_t * e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+
+    if(code == LV_EVENT_CLICKED) {
+        //LV_LOG_USER("Clicked : %d", g_bProcessFlag);
+        //g_bProcessFlag = !g_bProcessFlag;
+    }
+    else if(code == LV_EVENT_VALUE_CHANGED) {
+        //LV_LOG_USER("Toggled : %d", g_bProcessFlag);
+    }
 }
 
 // 创建第二个界面
@@ -654,11 +700,22 @@ static void create_second_ui(lv_obj_t *parent)
     lv_obj_set_style_bg_color(parent, lv_color_hex(0x000033), LV_PART_MAIN);
     
     // 添加一个大标签
-    screen2_label = lv_label_create(parent);
-    lv_obj_set_style_text_color(screen2_label, lv_color_hex(0xFFFFFF), 0);
-    lv_obj_set_style_text_font(screen2_label, &lv_font_montserrat_36, 0);
-    lv_label_set_text(screen2_label, "lalalalala\n");
-    lv_obj_center(screen2_label);
+    // screen2_label = lv_label_create(parent);
+    // lv_obj_set_style_text_color(screen2_label, lv_color_hex(0xFFFFFF), 0);
+    // lv_obj_set_style_text_font(screen2_label, &lv_font_montserrat_36, 0);
+    // lv_label_set_text(screen2_label, "lalalalala\n");
+    // lv_obj_center(screen2_label);
+
+    // lv_obj_t * btn1 = lv_btn_create(parent);  // 关键修改：使用parent而不是lv_screen_active()
+    // lv_obj_add_flag(btn1, LV_OBJ_FLAG_CHECKABLE);
+    // lv_obj_set_size(btn1, 400, 200);
+    // //lv_obj_align(btn1, LV_ALIGN_TOP_MID, 0, 50);  // 明确指定位置，避免重叠
+    // lv_obj_center(btn1);
+    
+    // lv_obj_t * label = lv_label_create(btn1);
+    // lv_label_set_text(label, "mode");
+    // lv_obj_center(label);
+    // lv_obj_add_event_cb(btn1, btn_event_handler1, LV_EVENT_ALL, NULL);
     
     // 添加返回按钮
     lv_obj_t * btn = lv_btn_create(parent);

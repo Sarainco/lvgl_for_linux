@@ -15,6 +15,7 @@
 
 
 extern unsigned char g_process_flg;
+extern bool g_bProcessFlag;
 
 void *rkmedia_vi_rockx_thread(void *args)
 {
@@ -114,9 +115,9 @@ void *rkmedia_vi_rockx_thread(void *args)
   stVoAttr.stImgRect.u32Width = disp_width;
   stVoAttr.stImgRect.u32Height = disp_height;
   stVoAttr.stDispRect.s32X = 0;
-  stVoAttr.stDispRect.s32Y = 0;
+  stVoAttr.stDispRect.s32Y = disp_height / 12;//顶部留白
   stVoAttr.stDispRect.u32Width = disp_width;
-  stVoAttr.stDispRect.u32Height = disp_height;
+  stVoAttr.stDispRect.u32Height = disp_height * 5 / 6;
   ret = RK_MPI_VO_CreateChn(0, &stVoAttr);
   if (ret) 
   {
@@ -196,6 +197,12 @@ void *rkmedia_vi_rockx_thread(void *args)
   // printf("%s initial finish\n", __func__);
   while (1) 
   {
+    if(!g_bProcessFlag)
+    {
+      //printf("g_bProcessFlag : %d\n", g_bProcessFlag);
+      continue;
+    }
+
     MEDIA_BUFFER src_mb = NULL;
     src_mb = RK_MPI_SYS_GetMediaBuffer(RK_ID_RGA, 1, -1);
     if (!src_mb) 

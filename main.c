@@ -173,7 +173,7 @@ static void lv_100ask_lesson_demos(void)
     //lesson_2_9_1();         // LVGL的定时器(lv_timer)-入门
 
     //lesson_3_1_1();         // 标签控件(lv_label)的用法
-    //lesson_3_2_1();         // 按钮控件(lv_button)的用法
+    lesson_3_2_1();         // 按钮控件(lv_button)的用法
     //lesson_3_3_1();         // 进度条控件(lv_bar)的用法
     //lesson_3_4_1();         // 滑动条控件(lv_slider)的用法
     //lesson_3_5_1();         // 圆弧控件(lv_arc)的用法
@@ -184,11 +184,11 @@ static void lv_100ask_lesson_demos(void)
     //lesson_3_10_1();        // 复选框控件(lv_checkbox)的用法
     //lesson_3_11_1();        // 线条控件(lv_line)的用法
     //lesson_3_12_1();        // LED控件(lv_led)的用法
-    lesson_3_13_1();        // 下拉列表控件(lv_dropdown)的用法
+    //lesson_3_13_1();        // 下拉列表控件(lv_dropdown)的用法
     //lesson_3_14_1();        // 滚轮控件(lv_roller)的用法
     //lesson_3_15_1();        // 消息框控件lv_msgbox的用法
     //lesson_3_16_1();        // 富文本控件(lv_span)的用法
-    //lesson_3_17_1();        // 文本框控件(lv_textarea)的用法
+    lesson_3_17_1();        // 文本框控件(lv_textarea)的用法
     //lesson_3_18_1();        // 键盘控件(lv_keyboard)的用法
     //lesson_3_19_1();        // 微调框控件(lv_spinbox)的用法
     //lesson_3_20_1();        // 表格控件(lv_table)的用法
@@ -335,11 +335,11 @@ int main(int argc, char **argv)
         return -1;
     }
 
-    // if(pthread_create(&thread_id_rkmedia, NULL, rkmedia_vi_rockx_thread, NULL))
-    // {
-    //     perror("无法创建线程");
-    //     return -1;
-    // }
+    if(pthread_create(&thread_id_rkmedia, NULL, rkmedia_vi_rockx_thread, NULL))
+    {
+        perror("无法创建线程");
+        return -1;
+    }
 
     configure_simulator(argc, argv);
 

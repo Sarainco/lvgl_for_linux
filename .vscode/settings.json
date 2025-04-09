@@ -4,6 +4,8 @@
         "vi_vo_thread.h": "c",
         "rkmedia.h": "c",
         "lv_port_indev.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "lv_blz.h": "c",
+        "lvgl.h": "c"
     }
 }
