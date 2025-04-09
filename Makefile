@@ -46,6 +46,7 @@ MAINSRC          = ./main.c
 include $(LVGL_DIR)/lvgl/lvgl.mk
 #include $(LVGL_DIR)/lv_100ask_lesson_demos/lv_100ask_lesson_demos.mk
 include $(LVGL_DIR)/log/tapah_log.mk
+include $(LVGL_DIR)/platform/platform.mk
 
 CFLAGS 			+= -DRKAIQ
 

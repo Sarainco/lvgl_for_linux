@@ -6,6 +6,7 @@
         "lv_port_indev.h": "c",
         "stdio.h": "c",
         "lv_blz.h": "c",
-        "lvgl.h": "c"
+        "lvgl.h": "c",
+        "vos_lst.h": "c"
     }
 }

@@ -28,7 +28,8 @@ void* key_monitor_thread(void* arg)
 
 
     /* 打开文件 */
-    if (0 > (fd = open(INPUT_DEVICE, O_RDONLY))) {
+    if (0 > (fd = open(INPUT_DEVICE, O_RDONLY))) 
+    {
         perror("open error");
         exit(-1);
     }
@@ -37,7 +38,8 @@ void* key_monitor_thread(void* arg)
     {
         /* 循环读取数据 */
         if (sizeof(struct input_event) !=
-            read(fd, &in_ev, sizeof(struct input_event))) {
+            read(fd, &in_ev, sizeof(struct input_event))) 
+        {
             perror("read error");
             exit(-1);
         }

@@ -12,6 +12,7 @@
 
 #include "include/lv_port/lv_port_indev.h"
 #include "log/tapah_log.h"
+#include "platform/vos.h"
 //#include "include/rkmedia/rkmedia.h"
 
 #if LV_USE_WAYLAND
