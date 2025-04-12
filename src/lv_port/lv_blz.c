@@ -1,7 +1,10 @@
 #include "../../include/lv_port/lv_blz.h"
 #include <time.h>
 
-
+/*********************
+ *      DEFINES
+ *********************/
+extern const lv_font_t qingniao_16;
 
 #if 0
 // 屏幕尺寸定义
@@ -723,7 +726,8 @@ static void create_second_ui(lv_obj_t *parent)
     lv_obj_align(btn, LV_ALIGN_BOTTOM_MID, 0, -20);
     
     lv_obj_t * btn_label = lv_label_create(btn);
-    lv_label_set_text(btn_label, "return");
+    lv_obj_set_style_text_font(btn_label,  &qingniao_16, 0); 
+    lv_label_set_text(btn_label, "返回");
     lv_obj_center(btn_label);
     
     lv_obj_add_event_cb(btn, btn_event_handler, LV_EVENT_CLICKED, NULL);
