@@ -199,7 +199,7 @@ void *rkmedia_vi_rockx_thread(void *args)
     {
         if(!g_bProcessFlag)
         {
-            //printf("g_bProcessFlag : %d\n", g_bProcessFlag);
+            printf("g_bProcessFlag : %d\n", g_bProcessFlag);
             continue;
         }
 
