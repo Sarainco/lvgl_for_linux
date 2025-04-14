@@ -516,23 +516,26 @@ static void update_ui(lv_timer_t *timer)
     // 更新时间
     time_t now;
     struct tm *timeinfo;
-    char time_str[16];
-    char sys_time_str[32];
+    char time_str[32];
+    //char sys_time_str[32];
     
     time(&now);
     timeinfo = localtime(&now);
     
-    // 上部时间显示(时分)
-    strftime(time_str, sizeof(time_str), "%H:%M", timeinfo);
+    // // 上部时间显示(时分)
+    // strftime(time_str, sizeof(time_str), "%H:%M", timeinfo);
+    // lv_label_set_text(time_label, time_str);
+
+    strftime(time_str, sizeof(time_str), "%H:%M %Y/%-m/%-d", timeinfo);
     lv_label_set_text(time_label, time_str);
     
-    // 底部系统时间(完整格式)
-    strftime(sys_time_str, sizeof(sys_time_str), "%Y-%m-%d %H:%M:%S", timeinfo);
-    lv_label_set_text(system_time_label, sys_time_str);
+    // // 底部系统时间(完整格式)
+    // strftime(sys_time_str, sizeof(sys_time_str), "%Y-%m-%d %H:%M:%S", timeinfo);
+    // lv_label_set_text(system_time_label, sys_time_str);
     
     // 更新电池状态(模拟电量变化)
     //battery_level = (battery_level > 0) ? (battery_level - 1) % 100 : 100;
-    lv_label_set_text_fmt(battery_label, "%d%%", battery_level);
+    lv_label_set_text_fmt(battery_label, "%d", battery_level);
     
     // 根据电量改变图标颜色
     if(battery_level < 20) {
@@ -577,6 +580,7 @@ static void gesture_event_handler(lv_event_t * e)
     }
 }
 
+#if 1
 // 按钮事件处理
 static void btn_event_handler(lv_event_t * e) 
 {
@@ -586,7 +590,21 @@ static void btn_event_handler(lv_event_t * e)
         lv_scr_load_anim(screen1, LV_SCR_LOAD_ANIM_MOVE_RIGHT, 300, 0, false);
     }
 }
-
+#else
+static void btn_event_handler(lv_event_t *e) 
+{
+    uintptr_t btn_id = (uintptr_t)lv_event_get_user_data(e);
+    switch (btn_id) {
+        case 0:  // 拍照
+            take_photo();
+            break;
+        case 1:  // 录像
+            record_video();
+            break;
+        // ...其他按钮逻辑
+    }
+}
+#endif
 // 按钮事件处理
 bool g_bProcessFlag = false;
 static void btn_event_handler2(lv_event_t * e) 
@@ -602,6 +620,14 @@ static void btn_event_handler2(lv_event_t * e)
         // 停止视频后调用
         lv_obj_invalidate(lv_scr_act());  // 标记整个屏幕为需要重绘
         lv_refr_now(NULL);                // 立即执行刷新
+    }
+}
+
+static void show_display_settings(lv_event_t *e) 
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    if (code == LV_EVENT_CLICKED) {
+        lv_scr_load(screen2);  // 加载显示设置界面
     }
 }
 
@@ -625,7 +651,7 @@ static void create_main_ui(lv_obj_t *parent)
     time_label = lv_label_create(top_panel);
     lv_obj_set_style_text_color(time_label, lv_color_hex(0xFFFFFF), 0);
     lv_obj_set_style_text_font(time_label, &lv_font_montserrat_28, 0);
-    lv_label_set_text(time_label, "00:00");
+    lv_label_set_text(time_label, "00:00 0000/0/0");
     
     // 电池组
     lv_obj_t *battery_group = lv_obj_create(top_panel);
@@ -638,35 +664,44 @@ static void create_main_ui(lv_obj_t *parent)
     // 电池图标
     battery_icon = lv_label_create(battery_group);
     lv_obj_set_style_text_color(battery_icon, lv_color_hex(0x00FF00), 0);
-    lv_obj_set_style_text_font(battery_icon, &lv_font_montserrat_24, 0);
+    lv_obj_set_style_text_font(battery_icon, &lv_font_montserrat_28, 0);
     lv_label_set_text(battery_icon, LV_SYMBOL_BATTERY_FULL);
     
+#if 0
     // 电量百分比
     battery_label = lv_label_create(battery_group);
     lv_obj_set_style_text_color(battery_label, lv_color_hex(0xFFFFFF), 0);
     lv_obj_set_style_text_font(battery_label, &lv_font_montserrat_20, 0);
     lv_label_set_text_fmt(battery_label, "%d%%", battery_level);
+#endif
 
-    /* 2. 下拉菜单 */
-    lv_obj_t * dd = lv_dropdown_create(parent);
-    lv_obj_set_width(dd, lv_pct(50));
-    lv_obj_set_height(dd, 60);
-    lv_dropdown_set_options(dd, "Standard display\nVessel highlighting\n3D stereoscopic display");
-    lv_obj_align(dd, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_style_bg_color(dd, lv_color_hex(0xff3c3b), LV_PART_MAIN | LV_STATE_DEFAULT);
+        // 2. 创建电量数字标签（覆盖在电池图标上）
+    battery_label = lv_label_create(battery_icon); // 关键点：父对象设为 battery_icon
+    lv_obj_set_style_text_color(battery_label, lv_color_hex(0xFFFFFF), 0); // 白色文字
+    lv_obj_set_style_text_font(battery_label, &lv_font_montserrat_14, 0); // 比图标小一号
+    lv_label_set_text_fmt(battery_label, "%d", battery_level); // 去掉 % 符号
+
+
+    // /* 2. 下拉菜单 */
+    // lv_obj_t * dd = lv_dropdown_create(parent);
+    // lv_obj_set_width(dd, lv_pct(50));
+    // lv_obj_set_height(dd, 60);
+    // lv_dropdown_set_options(dd, "Standard display\nVessel highlighting\n3D stereoscopic display");
+    // lv_obj_align(dd, LV_ALIGN_CENTER, 0, 0);
+    // lv_obj_set_style_bg_color(dd, lv_color_hex(0xff3c3b), LV_PART_MAIN | LV_STATE_DEFAULT);
     
-    lv_obj_t * dd_list = lv_dropdown_get_list(dd);
-    lv_obj_set_style_bg_color(dd_list, lv_color_hex(0xff3c3b), LV_PART_MAIN | LV_STATE_DEFAULT);
+    // lv_obj_t * dd_list = lv_dropdown_get_list(dd);
+    // lv_obj_set_style_bg_color(dd_list, lv_color_hex(0xff3c3b), LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    lv_obj_add_event_cb(dd, event_handler, LV_EVENT_ALL, NULL);
+    // lv_obj_add_event_cb(dd, event_handler, LV_EVENT_ALL, NULL);
 
-    /* 3. 底部区域 - 系统时间 */
-    system_time_label = lv_label_create(parent);
-    lv_obj_set_style_text_color(system_time_label, lv_color_hex(0xAAAAAA), 0);
-    lv_obj_set_style_text_font(system_time_label, &lv_font_montserrat_18, 0);
-    lv_obj_align(system_time_label, LV_ALIGN_BOTTOM_MID, 0, -10);
-    lv_label_set_text(system_time_label, "2023-01-01 00:00:00");
-
+    // /* 3. 底部区域 - 系统时间 */
+    // system_time_label = lv_label_create(parent);
+    // lv_obj_set_style_text_color(system_time_label, lv_color_hex(0xAAAAAA), 0);
+    // lv_obj_set_style_text_font(system_time_label, &lv_font_montserrat_18, 0);
+    // lv_obj_align(system_time_label, LV_ALIGN_BOTTOM_MID, 0, -10);
+    // lv_label_set_text(system_time_label, "2023-01-01 00:00:00");
+#if 0
     // 添加返回按钮
     lv_obj_t * btn = lv_btn_create(parent);
     lv_obj_set_size(btn, 120, 50);
@@ -677,6 +712,55 @@ static void create_main_ui(lv_obj_t *parent)
     lv_obj_center(btn_label);
     
     lv_obj_add_event_cb(btn, btn_event_handler2, LV_EVENT_CLICKED, NULL);
+#endif
+    // 1. 创建底部按钮容器（水平排列）
+    lv_obj_t *btn_panel = lv_obj_create(parent);
+    lv_obj_set_size(btn_panel, LV_PCT(100), 80);  // 宽度100%，高度80px
+    lv_obj_align(btn_panel, LV_ALIGN_BOTTOM_MID, 0, -10);
+    lv_obj_set_style_bg_opa(btn_panel, LV_OPA_TRANSP, 0);  // 透明背景
+    lv_obj_set_style_border_opa(btn_panel, LV_OPA_TRANSP, 0);  // 无边框
+    lv_obj_set_flex_flow(btn_panel, LV_FLEX_FLOW_ROW);  // 水平布局
+    lv_obj_set_flex_align(btn_panel, LV_FLEX_ALIGN_SPACE_EVENLY, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);  // 均匀分布
+
+    // 2. 定义按钮图标和名称
+    const char *btn_icons[] = 
+    {
+        LV_SYMBOL_IMAGE,      // 拍照
+        LV_SYMBOL_VIDEO,       // 录像
+        LV_SYMBOL_DIRECTORY,   // 浏览
+        LV_SYMBOL_EYE_OPEN,    // 投影设置
+        LV_SYMBOL_SETTINGS      // 显示设置
+    };
+
+    // const char *btn_texts[] = {
+    //     "拍照", "录像", "浏览", "投影", "显示"
+    // };
+
+    // 3. 创建5个图标按钮
+    for (int i = 0; i < 5; i++) {
+        lv_obj_t *btn = lv_btn_create(btn_panel);
+        lv_obj_set_size(btn, 70, 70);  // 圆形按钮建议尺寸
+        lv_obj_set_style_bg_color(btn, lv_color_hex(0x333333), 0);  // 按钮背景色
+        lv_obj_set_style_radius(btn, 35, 0);  // 圆形按钮（半径=高度/2）
+
+        // 按钮图标
+        lv_obj_t *icon = lv_label_create(btn);
+        lv_label_set_text(icon, btn_icons[i]);
+        lv_obj_set_style_text_font(icon, &lv_font_montserrat_24, 0);
+        lv_obj_set_style_text_color(icon, lv_color_hex(0xFFFFFF), 0);
+        lv_obj_align(icon, LV_ALIGN_CENTER, 0, -10);  // 图标居中（偏上）
+
+        // // 按钮文字
+        // lv_obj_t *label = lv_label_create(btn);
+        // lv_label_set_text(label, btn_texts[i]);
+        // lv_obj_set_style_text_font(label, &lv_font_montserrat_12, 0);
+        // lv_obj_set_style_text_color(label, lv_color_hex(0xFFFFFF), 0);
+        // lv_obj_align(label, LV_ALIGN_CENTER, 0, 15);  // 文字居中（偏下）
+
+        // 添加按钮事件回调（示例）
+        //lv_obj_add_event_cb(btn, btn_event_handler, LV_EVENT_CLICKED, (void *)(intptr_t)i);
+        //lv_obj_add_event_cb(btn, show_display_settings, LV_EVENT_CLICKED, NULL);
+    }
 }
 
 /**********************
@@ -696,41 +780,117 @@ static void btn_event_handler1(lv_event_t * e)
     }
 }
 
+static void close_settings_event(lv_event_t *e) 
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    if (code == LV_EVENT_CLICKED) {
+        // 返回上一页（假设主屏幕为 `main_screen`）
+        lv_scr_load(screen1);
+    }
+}
+
 // 创建第二个界面
 static void create_second_ui(lv_obj_t *parent) 
 {
-    // 设置蓝色背景以示区别
-    lv_obj_set_style_bg_color(parent, lv_color_hex(0x000033), LV_PART_MAIN);
+    // 设置黑色背景
+    lv_obj_set_style_bg_color(parent, lv_color_hex(0x000000), LV_PART_MAIN);
     
-    // 添加一个大标签
-    // screen2_label = lv_label_create(parent);
-    // lv_obj_set_style_text_color(screen2_label, lv_color_hex(0xFFFFFF), 0);
-    // lv_obj_set_style_text_font(screen2_label, &lv_font_montserrat_36, 0);
-    // lv_label_set_text(screen2_label, "lalalalala\n");
-    // lv_obj_center(screen2_label);
+    /* 1. 上部区域 - 时间+电量 */
+    lv_obj_t *top_panel = lv_obj_create(parent);
+    lv_obj_set_size(top_panel, LV_PCT(100), LV_SIZE_CONTENT);
+    lv_obj_set_flex_flow(top_panel, LV_FLEX_FLOW_ROW);
+    lv_obj_set_flex_align(top_panel, LV_FLEX_ALIGN_SPACE_BETWEEN, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+    lv_obj_set_style_pad_all(top_panel, 10, 0);
+    lv_obj_set_style_bg_opa(top_panel, LV_OPA_TRANSP, 0);
+    lv_obj_set_style_border_opa(top_panel, LV_OPA_TRANSP, 0);
+    lv_obj_align(top_panel, LV_ALIGN_TOP_MID, 0, 10);
+    
+    // 时间显示
+    time_label = lv_label_create(top_panel);
+    lv_obj_set_style_text_color(time_label, lv_color_hex(0xFFFFFF), 0);
+    lv_obj_set_style_text_font(time_label, &lv_font_montserrat_28, 0);
+    lv_label_set_text(time_label, "00:00 0000/0/0");
+    
+    // 电池组
+    lv_obj_t *battery_group = lv_obj_create(top_panel);
+    lv_obj_set_size(battery_group, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+    lv_obj_set_flex_flow(battery_group, LV_FLEX_FLOW_ROW);
+    lv_obj_set_flex_align(battery_group, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+    lv_obj_set_style_bg_opa(battery_group, LV_OPA_TRANSP, 0);
+    lv_obj_set_style_border_opa(battery_group, LV_OPA_TRANSP, 0);
+    
+    //电池图标
+    battery_icon = lv_label_create(battery_group);
+    lv_obj_set_style_text_color(battery_icon, lv_color_hex(0x00FF00), 0);
+    lv_obj_set_style_text_font(battery_icon, &lv_font_montserrat_28, 0);
+    lv_label_set_text(battery_icon, LV_SYMBOL_BATTERY_FULL);
 
-    // lv_obj_t * btn1 = lv_btn_create(parent);  // 关键修改：使用parent而不是lv_screen_active()
-    // lv_obj_add_flag(btn1, LV_OBJ_FLAG_CHECKABLE);
-    // lv_obj_set_size(btn1, 400, 200);
-    // //lv_obj_align(btn1, LV_ALIGN_TOP_MID, 0, 50);  // 明确指定位置，避免重叠
-    // lv_obj_center(btn1);
-    
-    // lv_obj_t * label = lv_label_create(btn1);
-    // lv_label_set_text(label, "mode");
-    // lv_obj_center(label);
-    // lv_obj_add_event_cb(btn1, btn_event_handler1, LV_EVENT_ALL, NULL);
-    
-    // 添加返回按钮
-    lv_obj_t * btn = lv_btn_create(parent);
-    lv_obj_set_size(btn, 120, 50);
-    lv_obj_align(btn, LV_ALIGN_BOTTOM_MID, 0, -20);
-    
-    lv_obj_t * btn_label = lv_label_create(btn);
-    lv_obj_set_style_text_font(btn_label,  &qingniao_16, 0); 
-    lv_label_set_text(btn_label, "返回");
-    lv_obj_center(btn_label);
-    
-    lv_obj_add_event_cb(btn, btn_event_handler, LV_EVENT_CLICKED, NULL);
+    // 标题
+    lv_obj_t *title = lv_label_create(parent);
+    lv_label_set_text(title, "显示设置");
+    lv_obj_set_style_text_font(title, &qingniao_16, 0);
+    lv_obj_set_style_text_color(title, lv_color_hex(0xFFFFFF), 0);
+    lv_obj_align(title, LV_ALIGN_TOP_MID, 0, 50);
+
+    // 设置项容器
+    lv_obj_t *settings_panel = lv_obj_create(parent);
+    lv_obj_set_size(settings_panel, LV_PCT(90), LV_PCT(60));
+    lv_obj_align(settings_panel, LV_ALIGN_TOP_MID, 0, 100);
+    lv_obj_set_style_bg_opa(settings_panel, LV_OPA_TRANSP, 0);
+    lv_obj_set_flex_flow(settings_panel, LV_FLEX_FLOW_COLUMN);
+    lv_obj_set_flex_align(settings_panel, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+
+    // 添加设置项（亮度、深度指示等）
+    const char *setting_names[] = {"深度指示", "血管提示线", "自动适应亮度", "自动休眠及唤醒"};
+    const char *switch_states[] = {"OFF", "ON", "OFF", "ON"};
+
+    for (int i = 0; i < 4; i++) 
+    {
+        lv_obj_t *setting_item = lv_obj_create(settings_panel);
+        lv_obj_set_size(setting_item, LV_PCT(100), 50);
+        lv_obj_set_style_bg_opa(setting_item, LV_OPA_TRANSP, 0);
+        lv_obj_set_flex_flow(setting_item, LV_FLEX_FLOW_ROW);
+        lv_obj_set_flex_align(setting_item, LV_FLEX_ALIGN_SPACE_BETWEEN, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+
+        // 设置项名称
+        lv_obj_t *label = lv_label_create(setting_item);
+        lv_label_set_text(label, setting_names[i]);
+        lv_obj_set_style_text_font(label, &qingniao_16, 0);
+        lv_obj_set_style_text_color(label, lv_color_hex(0xFFFFFF), 0);
+
+        // 开关按钮
+        lv_obj_t *sw = lv_switch_create(setting_item);
+        if (strcmp(switch_states[i], "ON") == 0) 
+        {
+            lv_obj_add_state(sw, LV_STATE_CHECKED);
+        }
+    }
+
+    // 底部按钮栏
+    lv_obj_t *btn_panel = lv_obj_create(parent);
+    lv_obj_set_size(btn_panel, LV_PCT(100), 80);
+    lv_obj_align(btn_panel, LV_ALIGN_BOTTOM_MID, 0, -10);
+    lv_obj_set_style_bg_opa(btn_panel, LV_OPA_TRANSP, 0);
+    lv_obj_set_flex_flow(btn_panel, LV_FLEX_FLOW_ROW);
+    lv_obj_set_flex_align(btn_panel, LV_FLEX_ALIGN_SPACE_EVENLY, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+
+    // 底部按钮
+    const char *btn_texts[] = {"关闭", "保存为默认", "恢复为默认"};
+    for (int i = 0; i < 3; i++) 
+    {
+        lv_obj_t *btn = lv_btn_create(btn_panel);
+        lv_obj_set_size(btn, 120, 50);
+        lv_obj_t *label = lv_label_create(btn);
+        lv_label_set_text(label, btn_texts[i]);
+        lv_obj_set_style_text_font(label, &qingniao_16, 0);
+        lv_obj_center(label);
+
+        // // 按钮事件（示例：关闭按钮返回上一页）
+        // if (i == 0) 
+        // {
+        //     lv_obj_add_event_cb(btn, close_settings_event, LV_EVENT_CLICKED, NULL);
+        // }
+    }
 }
 
 // 创建界面
@@ -755,3 +915,4 @@ void create_status_ui(void)
     update_timer = lv_timer_create(update_ui, 1000, NULL);
     update_ui(NULL); // 立即更新一次
 }
+

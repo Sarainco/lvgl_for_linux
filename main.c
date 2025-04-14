@@ -336,11 +336,11 @@ int main(int argc, char **argv)
         return -1;
     }
 
-    if(pthread_create(&thread_id_rkmedia, NULL, rkmedia_vi_rockx_thread, NULL))
-    {
-        perror("无法创建线程");
-        return -1;
-    }
+    // if(pthread_create(&thread_id_rkmedia, NULL, rkmedia_vi_rockx_thread, NULL))
+    // {
+    //     perror("无法创建线程");
+    //     return -1;
+    // }
 
     configure_simulator(argc, argv);
 
