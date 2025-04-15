@@ -2,7 +2,6 @@
 /******************************************************************************
  * vos_xmemory.c - 
  * 
- * Copyright 1999-2007 tensint Co.,Ltd.
  * 
  * DESCRIPTION: - 
  * 
@@ -97,7 +96,7 @@ void *vos_xmalloc(const char *pcFile, u_int32 ulLine,
     pstInfo->ulModuleId = ulModuleId;
     pstInfo->ulMemSize = uiLen - sizeof(u_int32);
     pstInfo->ulMemId = (u_int32)pstInfo;
-    //pstInfo->ulSec = vos_get_system_seconds();
+    pstInfo->ulSec = vos_get_system_seconds();
     /* 魔术字填充 */
     puiMagic = (u_int32 *)((u_long)pstInfo + uiLen - sizeof(u_int32));
     *puiMagic = VOS_MAGIC_INT;

@@ -737,7 +737,8 @@ static void create_main_ui(lv_obj_t *parent)
     // };
 
     // 3. 创建5个图标按钮
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 5; i++) 
+    {
         lv_obj_t *btn = lv_btn_create(btn_panel);
         lv_obj_set_size(btn, 70, 70);  // 圆形按钮建议尺寸
         lv_obj_set_style_bg_color(btn, lv_color_hex(0x333333), 0);  // 按钮背景色
@@ -844,7 +845,7 @@ static void create_second_ui(lv_obj_t *parent)
     const char *setting_names[] = {"深度指示", "血管提示线", "自动适应亮度", "自动休眠及唤醒"};
     const char *switch_states[] = {"OFF", "ON", "OFF", "ON"};
 
-    for (int i = 0; i < 4; i++) 
+    for (int i = 0; i < 4; i++)
     {
         lv_obj_t *setting_item = lv_obj_create(settings_panel);
         lv_obj_set_size(setting_item, LV_PCT(100), 50);
@@ -894,7 +895,7 @@ static void create_second_ui(lv_obj_t *parent)
 }
 
 // 创建界面
-void create_status_ui(void) 
+void create_status_ui(void)
 {
     // 创建两个屏幕
     screen1 = lv_obj_create(NULL);

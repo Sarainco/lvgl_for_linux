@@ -7,6 +7,10 @@
         "stdio.h": "c",
         "lv_blz.h": "c",
         "lvgl.h": "c",
-        "vos_lst.h": "c"
+        "vos_lst.h": "c",
+        "time.h": "c",
+        "vos_pthread.h": "c",
+        "vos.h": "c",
+        "vos_wdog.h": "c"
     }
 }
