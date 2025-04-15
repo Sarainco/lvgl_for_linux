@@ -79,7 +79,7 @@ void vos_pthread_init();
     1. 2025/04/15  Created by sarainco
 *****************************************************************************/
 THREAD_ID_T vos_pthread_create
-(    
+(
     u_int8    *pucName, 
     u_int8    ucPriority, 
     VOIDFUNCPTR  pFuncEntryPt, 
