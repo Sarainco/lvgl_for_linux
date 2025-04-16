@@ -24,7 +24,6 @@ extern "C"
 #include "vos_xmemory.h"
 #include <pthread.h>
 
-
 #ifndef THREAD_ID_T
 typedef pthread_t THREAD_ID_T;
 #endif
@@ -35,6 +34,7 @@ typedef struct vos_tcb
 {
     NODE node;
     THREAD_ID_T taskId;
+    pid_t uiThreadId;
     pthread_attr_t stThreadAttr;
     pthread_mutex_t stThreadMut;
     pthread_cond_t stThreadCond;

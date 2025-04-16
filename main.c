@@ -6,7 +6,7 @@
 #include <stdbool.h>
 #include "lvgl/lvgl.h"
 #include "lvgl/demos/lv_demos.h"
-
+#include "platform/vos_pthread.h"
 #include "lv_100ask_lesson_demos/lv_100ask_lesson_demos.h"
 #include "include/lv_port/lv_blz.h"
 
@@ -330,12 +330,18 @@ int main(int argc, char **argv)
     
 
     // 创建按键监控线程
-    if (pthread_create(&thread_id, NULL, key_monitor_thread, NULL) != 0) 
+    // if (pthread_create(&thread_id, NULL, key_monitor_thread, NULL) != 0) 
+    // {
+    //     perror("无法创建线程");
+    //     return -1;
+    // }
+
+    thread_id = vos_pthread_create("key_monitor_thread", 110, key_monitor_thread, NULL);
+    if(thread_id == -1)
     {
-        perror("无法创建线程");
+        printf("build thread err!\r\n");
         return -1;
     }
-
     // if(pthread_create(&thread_id_rkmedia, NULL, rkmedia_vi_rockx_thread, NULL))
     // {
     //     perror("无法创建线程");
