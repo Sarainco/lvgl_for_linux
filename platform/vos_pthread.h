@@ -76,7 +76,6 @@ void vos_pthread_init();
 返 回 值  : 
 
 修改历史      :
-    1. 2025/04/15  Created by sarainco
 *****************************************************************************/
 THREAD_ID_T vos_pthread_create
 (
@@ -85,6 +84,19 @@ THREAD_ID_T vos_pthread_create
     VOIDFUNCPTR  pFuncEntryPt, 
     void     *pArg
 );
+
+/*****************************************************************************
+Prototype    : vos_pthread_delete
+Description  :根据任务id撤销任务
+Input        : u_long ulTaskId:任务id
+Output       : None
+Return Value : 
+Calls        : 
+Called By    : 
+
+History        :
+*****************************************************************************/
+void vos_pthread_delete(THREAD_ID_T taskId);
 
 #ifdef __cplusplus
 }

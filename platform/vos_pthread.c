@@ -43,7 +43,7 @@ pid_t gettid()
 
 void *vos_pthread_start(void *pArg)
 {
-    VOS_TCB_T *pstVosTcb;
+    VOS_TCB_T *pstVosTcb = NULL;
     pstVosTcb = (VOS_TCB_T *)pArg;
     pstVosTcb->uiThreadId = gettid();
     prctl(PR_SET_NAME, pstVosTcb->ucName);
@@ -83,6 +83,19 @@ u_int32 vos_linux_pthread_translate(u_int32 ulVxPriority, u_int32 ulSchedPolicy)
     return (ulPthreadPriority);
 }
 
+/*****************************************************************************
+函 数 名  : vos_pthread_create
+功能描述  :创建任务
+输入参数  : u_int8    *pucName 任务名字 
+            u_int8    ucPriority   任务优先级 
+            VOIDFUNCPTR  pFuncEntryPt 任务回调函数
+            void     *pArg 任务回调函数参数
+输出参数  : 无
+返 回 值  : 
+
+修改历史      :
+
+*****************************************************************************/
 THREAD_ID_T vos_pthread_create(u_int8 *pucName, u_int8 ucPriority, VOIDFUNCPTR pFuncEntryPt, void *pArg)
 {
     int iRet = 0;
@@ -122,4 +135,29 @@ THREAD_ID_T vos_pthread_create(u_int8 *pucName, u_int8 ucPriority, VOIDFUNCPTR p
     pthread_attr_destroy(&(pstVosTcb->stThreadAttr));
 
     return pstVosTcb->taskId;
+}
+
+
+void vos_pthread_delete(THREAD_ID_T taskId)
+{
+    VOS_TCB_T *pstTcb = NULL;
+
+    vos_pthread_lock(&(g_stLstTcb.stMuxLock));
+    for(pstTcb = (VOS_TCB_T *)(lstFirst(&(g_stLstTcb.lstTcb))); pstTcb != NULL; pstTcb = (VOS_TCB_T *)(lstNext((NODE *)pstTcb)))
+    {
+        if(pstTcb->taskId == taskId)
+        {
+            vos_pthrread_lock(&(pstTcb->stThreadMut));
+            pthread_cancel(taskId);
+            vos_pthrread_unlock(&(pstTcb->stThreadMut));
+            break;
+        }
+    }
+    if(pstTcb != NULL)
+    {
+        lstDelete(&(g_stLstTcb.lstTcb), (NODE *)pstTcb);
+        XFREE(MTYPE_PTHREAD, pstTcb);
+    }
+    vos_pthread_unlock(&(g_stLstTcb.stMuxLock));
+
 }
