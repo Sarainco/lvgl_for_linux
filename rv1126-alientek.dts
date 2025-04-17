@@ -14,6 +14,7 @@
     };
 };
 
+
 &dsi {
 	status = "okay";
 
@@ -115,7 +116,7 @@
     status = "okay";
 
     panel@0 {
-        compatible = "ilitek,ili9881d", "simple-panel-dsi";
+        compatible = "ilitek,jd9852", "simple-panel-dsi";
         reg = <0>;
         backlight = <&backlight>;
         power-supply = <&vcc18_lcd_n>;
@@ -159,7 +160,6 @@
             15 01 02 DE 00
             05 00 01 29
         ];
-
 
 		display-timings {
             native-mode = <&timing0>;
@@ -336,36 +336,10 @@
             };
         };
     };
-/*
-    sc132gs: sc132gs@30 {
-        compatible = "smartsens,sc132gs";
-        reg = <0x30>; // I2C 地址，需确认
-        clocks = <&cru CLK_MIPICSI_OUT>;
-        clock-names = "xvclk";
-        power-domains = <&power RV1126_PD_VI>;
-        avdd-supply = <&vcc_avdd>;
-        dovdd-supply = <&vcc_dovdd>;
-        dvdd-supply = <&vcc_dvdd>;
-        pwdn-gpios = <&gpio1 RK_PD2 GPIO_ACTIVE_HIGH>;
-        reset-gpios = <&gpio1 RK_PD1 GPIO_ACTIVE_LOW>;
-
-        rockchip,camera-module-index = <0>;
-        rockchip,camera-module-facing = "front";
-        rockchip,camera-module-name = "SC132GS";
-        rockchip,camera-module-lens-name = "GenericLens";
-
-        port {
-            sc132gs_out: endpoint {
-                remote-endpoint = <&mipi_in_ucam0>;
-                data-lanes = <1 2>; // 或 <1 2 3 4>，看你的模块
-            };
-        };
-    };
-*/
-
 };
 
 &i2c5 {
+/*
     gt1x: gt1x@14 {
         compatible = "goodix,gt9xx";
         reg = <0x14>;
@@ -377,6 +351,19 @@
         touch-gpio = <&gpio2 RK_PB2 GPIO_ACTIVE_LOW>;
         tp-size = <911>;
         status = "okay";
+    };
+*/
+    ft5436: ft5436@38 {
+        compatible = "edt,edt-ft5x06";
+        reg = <0x38>;
+        // interrupt-parent = <&gpio2>;
+        // interrupts = <RK_PB2 IRQ_TYPE_EDGE_FALLING>;
+        pinctrl-names = "default";
+        pinctrl-0 = <&touch_gpio>;
+        reset-gpios = <&gpio2 RK_PB0 GPIO_ACTIVE_HIGH>;
+        touch-gpio = <&gpio2 RK_PB2 GPIO_ACTIVE_LOW>;
+        touchscreen-size-x = <240>;
+        touchscreen-size-y = <320>;
     };
 
     imx415_csi1: imx415@1a {
@@ -404,6 +391,32 @@
         };
     };
 
+/*
+    sc132gs: sc132gs@33 {
+        compatible = "smartsens,sc132gs";
+        reg = <0x33>;
+        clocks = <&cru CLK_MIPICSI_OUT>;
+        clock-names = "xvclk";
+        power-domains = <&power RV1126_PD_VI>;
+        pinctrl-names = "rockchip,camera_default";
+        pinctrl-0 = <&mipicsi_clk1>;
+        // avdd-supply = <&vcc_avdd>;
+        // dovdd-supply = <&vcc_dovdd>;
+        // dvdd-supply = <&vcc_dvdd>;
+        pwdn-gpios = <&gpio2 RK_PA7 GPIO_ACTIVE_HIGH>;
+        reset-gpios = <&gpio4 RK_PA1 GPIO_ACTIVE_LOW>;
+        rockchip,camera-module-index = <1>;
+        rockchip,camera-module-facing = "front";
+        rockchip,camera-module-name = "YT10092";
+        rockchip,camera-module-lens-name = "IR0147-60IRC-8M-F20-hdr3";
+        port {
+            ucam_out2: endpoint {
+                remote-endpoint = <&csi_dphy1_input>;
+                data-lanes = <1 2 3 4>;
+            };
+        };
+    };
+*/
     imx335_csi1: imx335-csi@1a {
         compatible = "sony,imx335";
         reg = <0x1a>;
