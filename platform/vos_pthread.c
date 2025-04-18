@@ -147,9 +147,9 @@ void vos_pthread_delete(THREAD_ID_T taskId)
     {
         if(pstTcb->taskId == taskId)
         {
-            vos_pthrread_lock(&(pstTcb->stThreadMut));
+            vos_pthread_lock(&(pstTcb->stThreadMut));
             pthread_cancel(taskId);
-            vos_pthrread_unlock(&(pstTcb->stThreadMut));
+            vos_pthread_unlock(&(pstTcb->stThreadMut));
             break;
         }
     }
