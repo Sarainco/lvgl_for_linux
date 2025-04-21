@@ -10,7 +10,7 @@
 *
 *****************************************************************************/
 
-#include "include/rkmedia/rkmedia.h"
+#include "rkmedia.h"
 #include "include/lv_port/lv_port_indev.h"
 
 

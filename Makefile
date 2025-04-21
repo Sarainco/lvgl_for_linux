@@ -51,6 +51,7 @@ include $(LVGL_DIR)/bsp/bsp.mk
 include $(LVGL_DIR)/src/src.mk
 
 CFLAGS 			+= -DRKAIQ
+CFLAGS			+= -DTAPAHLOGD
 
 CFLAGS			+= -I$(LVGL_DIR)
 CFLAGS			+= -I$(SYSROOT)/usr/include \
@@ -64,12 +65,9 @@ CFLAGS			+= -I$(SYSROOT)/usr/include \
 				   -I$(SYSROOT)/usr/include/rockx
 CFLAGS			+= -I$(INCLUDE_DIR)/lv_port
 #CFLAGS			+= -I$(INCLUDE_DIR)/vi_vo
-CFLAGS			+= -I$(INCLUDE_DIR)/rkmedia
 
 CSRCS 			+= $(wildcard $(SRC_DIR)/lv_port/*.c)
-CSRCS 			+= $(wildcard $(SRC_DIR)/input_event/*.c)
 #CSRCS			+= $(wildcard $(SRC_DIR)/vi_vo/*.c)
-CSRCS 			+= $(wildcard $(SRC_DIR)/rkmedia/*.c)
 
 
 OBJEXT 			?= .o

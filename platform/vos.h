@@ -130,6 +130,26 @@ enum
 #endif /* __cplusplus */
 
 
+typedef struct
+{
+    u_int8 *pucName;
+    u_int8 ucPriority;
+    VOIDFUNCPTR pFuncEntryPt;
+    void *pArg;
+} VOS_PTHREAD_INFO_T;
+
+/*****************************************************************************
+函 数 名  : vos_pthread_build
+    功能描述  :创建所有任务
+    输入参数  : 无
+    输出参数  : 无
+    返 回 值  :
+
+    修改历史      :
+
+*****************************************************************************/
+void vos_pthread_build();
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
