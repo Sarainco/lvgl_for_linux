@@ -47,6 +47,8 @@ include $(LVGL_DIR)/lvgl/lvgl.mk
 #include $(LVGL_DIR)/lv_100ask_lesson_demos/lv_100ask_lesson_demos.mk
 include $(LVGL_DIR)/log/tapah_log.mk
 include $(LVGL_DIR)/platform/platform.mk
+include $(LVGL_DIR)/bsp/bsp.mk
+include $(LVGL_DIR)/src/src.mk
 
 CFLAGS 			+= -DRKAIQ
 

@@ -12,6 +12,8 @@
 
 #include "vos_wdog.h"
 
+
+
 u_llong vos_get_system_seconds()
 {
     struct timespec ts;
