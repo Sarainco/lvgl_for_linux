@@ -14,7 +14,7 @@
     };
 };
 
-
+/*
 &dsi {
 	status = "okay";
 
@@ -110,8 +110,8 @@
 		};
 	};
 };
+*/
 
-/*
 &dsi {
     status = "okay";
 
@@ -205,7 +205,7 @@
         };
     };
 };
-*/
+
 
 &csi_dphy0 {
     status = "okay";
@@ -353,6 +353,7 @@
         status = "okay";
     };
 */
+
     ft5436: edt-ft5x06@38 {
         compatible = "edt,edt-ft5x06";
         reg = <0x38>;
@@ -363,8 +364,10 @@
         reset-gpio = <&gpio2 RK_PB0 GPIO_ACTIVE_LOW>;
         touchscreen-size-x = <240>;
         touchscreen-size-y = <320>;
+        status = "okay";
     };
 
+/*
     imx415_csi1: imx415@1a {
         compatible = "sony,imx415";
         reg = <0x1a>;
@@ -389,9 +392,9 @@
             };
         };
     };
-
-/*
+*/
     sc132gs: sc132gs@33 {
+        status = "okay";
         compatible = "smartsens,sc132gs";
         reg = <0x33>;
         clocks = <&cru CLK_MIPICSI_OUT>;
@@ -399,11 +402,10 @@
         power-domains = <&power RV1126_PD_VI>;
         pinctrl-names = "rockchip,camera_default";
         pinctrl-0 = <&mipicsi_clk1>;
-        // avdd-supply = <&vcc_avdd>;
-        // dovdd-supply = <&vcc_dovdd>;
-        // dvdd-supply = <&vcc_dvdd>;
-        pwdn-gpios = <&gpio2 RK_PA7 GPIO_ACTIVE_HIGH>;
-        reset-gpios = <&gpio4 RK_PA1 GPIO_ACTIVE_LOW>;
+        avdd-supply = <&vcc_avdd>;
+        dovdd-supply = <&vcc_dovdd>;//vcc_1v8
+        dvdd-supply = <&vcc_dvdd>;
+        pwdn-gpios = <&gpio4 RK_PA1 GPIO_ACTIVE_HIGH>;
         rockchip,camera-module-index = <1>;
         rockchip,camera-module-facing = "front";
         rockchip,camera-module-name = "YT10092";
@@ -415,8 +417,9 @@
             };
         };
     };
-*/
+
     imx335_csi1: imx335-csi@1a {
+        status = "disabled";
         compatible = "sony,imx335";
         reg = <0x1a>;
         clocks = <&cru CLK_MIPICSI_OUT>;
@@ -427,8 +430,8 @@
         avdd-supply = <&vcc_avdd>;
         dovdd-supply = <&vcc_dovdd>;
         dvdd-supply = <&vcc_dvdd>;
-        pwdn-gpios = <&gpio2 RK_PA7 GPIO_ACTIVE_HIGH>;
-        reset-gpios = <&gpio4 RK_PA1 GPIO_ACTIVE_LOW>;
+        //pwdn-gpios = <&gpio2 RK_PA7 GPIO_ACTIVE_HIGH>;
+        //reset-gpios = <&gpio4 RK_PA1 GPIO_ACTIVE_LOW>;
         rockchip,camera-module-index = <1>;
         rockchip,camera-module-facing = "front";
         rockchip,camera-module-name = "MTV4-IR-E-P";
@@ -440,6 +443,7 @@
             };
         };
     };
+
 };
 
 &isp_reserved {

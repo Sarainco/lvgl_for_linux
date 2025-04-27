@@ -24,9 +24,10 @@ void *rkmedia_vi_rockx_thread(void *args)
     RK_U32 video_width = 720;
     RK_U32 video_height = 1280;
 
-    RK_CHAR *pDeviceName = "rkispp_scale0";
-    RK_CHAR *pcDevNode = "/dev/dri/card0";
-    char *iq_file_dir = "/etc/iqfiles";
+    RK_CHAR *pDeviceName = "rkispp_scale1";
+    RK_CHAR *pcDevNode = "/dev/dri/card1";
+    //char *iq_file_dir = "/etc/iqfiles";
+    char *iq_file_dir = NULL;
     RK_S32 s32CamId = 0;
     RK_U32 u32BufCnt = 3;
     RK_U32 fps = 20;
@@ -197,11 +198,11 @@ void *rkmedia_vi_rockx_thread(void *args)
     // printf("%s initial finish\n", __func__);
     while (1) 
     {
-        if(!g_bProcessFlag)
-        {
-            //printf("g_bProcessFlag : %d\n", g_bProcessFlag);
-            continue;
-        }
+        // if(!g_bProcessFlag)
+        // {
+        //     //printf("g_bProcessFlag : %d\n", g_bProcessFlag);
+        //     continue;
+        // }
 
         MEDIA_BUFFER src_mb = NULL;
         src_mb = RK_MPI_SYS_GetMediaBuffer(RK_ID_RGA, 1, -1);

@@ -336,12 +336,12 @@ int main(int argc, char **argv)
     //     return -1;
     // }
 
-    thread_id = vos_pthread_create("key_monitor_thread", 110, key_monitor_thread, NULL);
-    if(thread_id == -1)
-    {
-        printf("build thread err!\r\n");
-        return -1;
-    }
+    // thread_id = vos_pthread_create("key_monitor_thread", 110, key_monitor_thread, NULL);
+    // if(thread_id == -1)
+    // {
+    //     printf("build thread err!\r\n");
+    //     return -1;
+    // }
     // if(pthread_create(&thread_id_rkmedia, NULL, rkmedia_vi_rockx_thread, NULL))
     // {
     //     perror("无法创建线程");
@@ -378,7 +378,7 @@ int main(int argc, char **argv)
     //create_ui();
     //lv_example_datetime();
     // create_main_ui();
-    create_status_ui();
+    //create_status_ui();
 
     /*Handle LVGL tasks*/
     while(1) 
